@@ -121,14 +121,21 @@
 Делим количество успешных запусков на обзее количество и умножаем на 100. Все довольно просто. 
 Вся эта ифнформация у нас есть в exta.history.statistic, нужно только составить запрос. 
 У меня этот запрос получился таким: 
-`cat *.json | jq -s "[.[] | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]`
-Результат выполнения меня опечалил: 
-`jq: error (at <stdin>:2310561): null (null) and null (null) cannot be divided`
+```
+cat *.json | jq -s "[.[] | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]
+```
 
+Результат выполнения меня опечалил: 
+```
+jq: error (at <stdin>:2310561): null (null) and null (null) cannot be divided
+```
 Это происходит потому что в конкретном запуске есть тесты, у которых нет истории, по-этому нет блока extra.history. 
 Давыайте добавим фильтрацию по этому признаку: `select(.extra.history.statistic != null)`. 
 Результирующий запрос стал выглядеть следующим образом:   
-`cat *.json | jq -s "[.[] | select(.extra.history.statistic != null) | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]`
+```
+cat *.json | jq -s "[.[] | select(.extra.history.statistic != null) | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]
+```
+
 Результатом его выполнения будет: 
 ``
 [
