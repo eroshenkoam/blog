@@ -23,11 +23,12 @@
 ## Решение
 
 Если заглянуть внутрь директории с Alure отчетом, то мы увидим следующуу структуру: 
-
+```
 - apps.js
 + data 
 + export
 ...
+```
 
 Для нас представляет интерес директория `data`, а точнее ее содержимое `data/test-cases/*`. 
 В этой директории находится информация о всех результатах тестов, которая отображается в отчете. 
@@ -124,7 +125,6 @@
 ```
 cat *.json | jq -s "[.[] | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]
 ```
-
 Результат выполнения меня опечалил: 
 ```
 jq: error (at <stdin>:2310561): null (null) and null (null) cannot be divided
@@ -135,9 +135,8 @@ jq: error (at <stdin>:2310561): null (null) and null (null) cannot be divided
 ```
 cat *.json | jq -s "[.[] | select(.extra.history.statistic != null) | { test: .fullName, rate: (.extra.history.statistic.passed / .extra.history.statistic.total * 100) }]
 ```
-
 Результатом его выполнения будет: 
-``
+```
 [
   {
     "test": "ru.package.Class.method",
@@ -148,7 +147,7 @@ cat *.json | jq -s "[.[] | select(.extra.history.statistic != null) | { test: .f
     "rate": 83.33333333333334 
   }
 ]  
-
+```
 Собственно, так мы и получим список всех тестов, которые постоянно падают. 
 
 ## Заключение
